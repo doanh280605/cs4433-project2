@@ -11,7 +11,30 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 /**
+ * This implementation performs exactly one iteration of the KMeans clustering algorithm
+ * using one MapReduce job
  *
+ * Input:
+ * - a fixed dataset of 2D points stored in HDFS
+ * - an initial centroid file having K cluster centers also stored in HDFS
+ *
+ * Mapper:
+ * - Load the current centroids using Hadoop's Distributed Cache
+ * - For each input point, computes the Euclidean distance to every centroid
+ * - Assigns the point to the nearest centroid
+ * - Emit clusterId, point pairs
+ *
+ * Reducer:
+ * - Receives all points assigned to the same clusterId
+ * - Computes the new centroid by averaging the x y coordinates of the points
+ * - Outputs clusterId, new centroid coordinates
+ *
+ * Output:
+ * - A new centroid file representing updated cluster centers after 1 iteration
+ *
+ * The code doesn't itearate until convergence, it executes the KMeans once. The output
+ * centroids are intended to be used as input for subsequent iterations in multi-iteration
+ * or early-stopping version of the algorithm
  */
 
 public class KMeansSingleIteration {
