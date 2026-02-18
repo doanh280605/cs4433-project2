@@ -60,14 +60,7 @@ public class KMeansMultiIteration {
 
         @Override
         protected void setup(Context context) throws IOException {
-            URI[] files = context.getCacheFiles();
-            if (files == null || files.length == 0) {
-                throw new IOException("Centroid file not found");
-            }
-
-            File centroidFile = new File(files[0].getPath());
-
-            try (BufferedReader br = new BufferedReader(new FileReader(centroidFile))) {
+            try (BufferedReader br = new BufferedReader(new FileReader("centroids"))) {
                 String line;
                 while ((line = br.readLine()) != null) {
                     line = line.trim();
